@@ -44,6 +44,7 @@ library
                  array,
                  containers >= 0.2,
                  deepseq >= 1.1 && < 1.5
+
   if flag(old-time)
     build-depends: directory < 1.2, old-time
   else
@@ -113,9 +114,21 @@ test-suite properties
     Codec.Archive.Tar.Index.StringTable
     Codec.Archive.Tar.Index.IntTrie
 
+  -- shared w/ lib:tar component
+  other-modules:
+    Codec.Archive.Tar
+    Codec.Archive.Tar.Check
+    Codec.Archive.Tar.Pack
+    Codec.Archive.Tar.Read
+    Codec.Archive.Tar.Types
+    Codec.Archive.Tar.Unpack
+    Codec.Archive.Tar.Write
+
   other-extensions:
-    CPP, BangPatterns,
-    DeriveDataTypeable, ScopedTypeVariables
+    CPP
+    BangPatterns,
+    DeriveDataTypeable
+    ScopedTypeVariables
 
   ghc-options: -fno-ignore-asserts
 
@@ -124,14 +137,27 @@ benchmark bench
   hs-source-dirs: . bench
   main-is:       bench/Main.hs
   build-depends: base,
-                 bytestring,
-                 filepath, directory,
+                 bytestring >= 0.10,
+                 filepath,
+                 directory >= 1.2,
                  array,
                  containers,
                  deepseq,
-                 old-time, time,
+                 time,
                  criterion >= 1.0
 
   if !impl(ghc >= 8.0)
     build-depends: semigroups == 0.18.*
 
+  -- shared w/ lib:tar component
+  other-modules:
+    Codec.Archive.Tar
+    Codec.Archive.Tar.Check
+    Codec.Archive.Tar.Index
+    Codec.Archive.Tar.Index.IntTrie
+    Codec.Archive.Tar.Index.StringTable
+    Codec.Archive.Tar.Pack
+    Codec.Archive.Tar.Read
+    Codec.Archive.Tar.Types
+    Codec.Archive.Tar.Unpack
+    Codec.Archive.Tar.Write
