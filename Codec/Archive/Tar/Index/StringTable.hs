@@ -44,23 +44,13 @@ import Control.Exception (assert)
 
 import qualified Data.Array.Unboxed as A
 import           Data.Array.Unboxed ((!))
-#if MIN_VERSION_containers(0,5,0)
 import qualified Data.Map.Strict        as Map
 import           Data.Map.Strict (Map)
-#else
-import qualified Data.Map               as Map
-import           Data.Map (Map)
-#endif
 import qualified Data.ByteString        as BS
 import qualified Data.ByteString.Unsafe as BS
 import qualified Data.ByteString.Lazy   as LBS
-#if MIN_VERSION_bytestring(0,10,2) || defined(MIN_VERSION_bytestring_builder)
 import Data.ByteString.Builder          as BS
 import Data.ByteString.Builder.Extra    as BS (byteStringCopy)
-#else
-import Data.ByteString.Lazy.Builder     as BS
-import Data.ByteString.Lazy.Builder.Extras as BS (byteStringCopy)
-#endif
 
 
 -- | An effecient mapping from strings to a dense set of integers.
@@ -310,11 +300,7 @@ enumIds (StringTable _ offsets _ _) = [toEnum 0 .. toEnum (fromIntegral (h-1))]
   where (0,h) = A.bounds offsets
 
 toStrict :: LBS.ByteString -> BS.ByteString
-#if MIN_VERSION_bytestring(0,10,0)
 toStrict = LBS.toStrict
-#else
-toStrict = BS.concat . LBS.toChunks
-#endif
 
 #endif
 

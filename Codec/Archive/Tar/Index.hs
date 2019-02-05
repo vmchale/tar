@@ -112,15 +112,9 @@ import qualified Data.ByteString        as BS
 import qualified Data.ByteString.Char8  as BS.Char8
 import qualified Data.ByteString.Lazy   as LBS
 import qualified Data.ByteString.Unsafe as BS
-#if MIN_VERSION_bytestring(0,10,2) || defined(MIN_VERSION_bytestring_builder)
 import Data.ByteString.Builder          as BS
 import Data.ByteString.Builder.Extra    as BS (toLazyByteStringWith,
                                                untrimmedStrategy)
-#else
-import Data.ByteString.Lazy.Builder     as BS
-import Data.ByteString.Lazy.Builder.Extras as BS (toLazyByteStringWith,
-                                                  untrimmedStrategy)
-#endif
 
 #ifdef TESTS
 import qualified Prelude
@@ -813,11 +807,7 @@ prop_finalise_unfinalise (SimpleIndexBuilder index) =
 #endif
 
 toStrict :: LBS.ByteString -> BS.ByteString
-#if MIN_VERSION_bytestring(0,10,0)
 toStrict = LBS.toStrict
-#else
-toStrict = BS.concat . LBS.toChunks
-#endif
 
 #if !(MIN_VERSION_base(4,5,0))
 (<>) :: Monoid m => m -> m -> m

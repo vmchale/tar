@@ -188,11 +188,7 @@ instance NFData EntryContent where
       OtherEntryType _ c _  -> rnflbs c
       _                     -> seq x ()
     where
-#if MIN_VERSION_bytestring(0,10,0)
       rnflbs = rnf
-#else
-      rnflbs = foldr (\ !_bs r -> r) () . LBS.toChunks
-#endif
 
 instance NFData Ownership where
   rnf (Ownership o g _ _) = rnf o `seq` rnf g
@@ -408,11 +404,7 @@ newtype LinkTarget = LinkTarget BS.ByteString
   deriving (Eq, Ord, Show)
 
 instance NFData LinkTarget where
-#if MIN_VERSION_bytestring(0,10,0)
     rnf (LinkTarget bs) = rnf bs
-#else
-    rnf (LinkTarget !_bs) = ()
-#endif
 
 -- | Convert a native 'FilePath' to a tar 'LinkTarget'. This may fail if the
 -- string is longer than 100 characters or if it contains non-portable

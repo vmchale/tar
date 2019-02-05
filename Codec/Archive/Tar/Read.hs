@@ -32,11 +32,6 @@ import qualified Data.ByteString.Lazy   as LBS
 
 import Prelude hiding (read)
 
-#if !MIN_VERSION_bytestring(0,10,0)
-import Data.Monoid (Monoid(..))
-import qualified Data.ByteString.Lazy.Internal as LBS
-#endif
-
 -- | Errors that can be encountered when parsing a Tar archive.
 data FormatError
   = TruncatedArchive
@@ -119,7 +114,7 @@ getEntry bs
       bs'     = LBS.drop (512 + size + padding) bs
 
       entry = Entry {
-        entryTarPath     = TarPath name prefix,
+        entryTarPath     = TarPath name prefix, -- FIXME: this seems not compliant with GNU
         entryContent     = case typecode of
                    '\0' -> NormalFile      content size
                    '0'  -> NormalFile      content size
@@ -143,12 +138,7 @@ getEntry bs
   return (Just (entry, bs'))
 
   where
-#if MIN_VERSION_bytestring(0,10,0)
    header = LBS.toStrict (LBS.take 512 bs)
-#else
-   header = toStrict (LBS.take 512 bs)
-   toStrict = LBS.foldrChunks mappend mempty
-#endif
 
    name       = getString   0 100 header
    mode_      = getOct    100   8 header
